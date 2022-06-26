@@ -1,19 +1,20 @@
-package moviebuddy;
+package moviebuddy.domain;
 
 import java.util.List;
 
 /**
  * @author springrunner.kr@gmail.com
+ * 영화감독으로 검색을 하더나 또는 개봉 연도로 검색을 해서 검색한 결과가 일치하는지 검증하는 코드
  */
-public class MovieBuddyApplicationTest {
+public class MovieFinerTest {
 
 	public static void main(String[] args) {
-		MovieBuddyApplication application = new MovieBuddyApplication();
+		MovieFinder movFinder = new MovieFinder();
 		
-		List<Movie> result = application.directedBy("Michael Bay");
+		List<Movie> result = movFinder.directedBy("Michael Bay");
 		assertEquals(3, result.size());
 
-        result = application.releasedYearBy(2015);
+        result = movFinder.releasedYearBy(2015);
         assertEquals(225, result.size());
 	}
 	
