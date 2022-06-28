@@ -9,7 +9,7 @@ import java.util.List;
 public class MovieFinerTest {
 
 	public static void main(String[] args) {
-		MovieFinder movFinder = new CsvMovieFinder();
+		MovieFinder movFinder = new MovieFinder();
 		
 		List<Movie> result = movFinder.directedBy("Michael Bay");
 		assertEquals(3, result.size());
