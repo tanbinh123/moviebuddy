@@ -13,6 +13,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import moviebuddy.domain.CsvMovieReader;
 import moviebuddy.domain.Movie;
 import moviebuddy.domain.MovieFinder;
 
@@ -36,7 +37,7 @@ public class MovieBuddyApplication {
      */
 
     public void run(String[] args) throws Exception {
-    	final MovieFinder movFinder = new MovieFinder();
+    	final MovieFinder movFinder = new MovieFinder(new CsvMovieReader());
     	
         final AtomicBoolean running = new AtomicBoolean(true);
         final BufferedReader input = new BufferedReader(new InputStreamReader(System.in));

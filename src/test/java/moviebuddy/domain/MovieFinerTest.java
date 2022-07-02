@@ -9,7 +9,9 @@ import java.util.List;
 public class MovieFinerTest {
 
 	public static void main(String[] args) {
-		MovieFinder movFinder = new MovieFinder();
+		//MovieFinder movFinder = new MovieFinder();
+		//외부에서 받도록 변경
+		MovieFinder movFinder = new MovieFinder(new CsvMovieReader());
 		
 		List<Movie> result = movFinder.directedBy("Michael Bay");
 		assertEquals(3, result.size());
