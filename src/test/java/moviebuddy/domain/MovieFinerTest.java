@@ -2,6 +2,8 @@ package moviebuddy.domain;
 
 import java.util.List;
 
+import moviebuddy.MovieBuddyFactory;
+
 /**
  * @author springrunner.kr@gmail.com
  * 영화감독으로 검색을 하더나 또는 개봉 연도로 검색을 해서 검색한 결과가 일치하는지 검증하는 코드
@@ -11,12 +13,15 @@ public class MovieFinerTest {
 	public static void main(String[] args) {
 		//MovieFinder movFinder = new MovieFinder();
 		//외부에서 받도록 변경
-		MovieFinder movFinder = new MovieFinder(new CsvMovieReader());
+		//MovieFinder movFinder = new MovieFinder(new CsvMovieReader());
+		//중복되어 생성되는 객체를 Factory를 통한 역할과 책임 분리
+    	MovieBuddyFactory movieBuddyFactory = new MovieBuddyFactory();
+    	MovieFinder movieFinder = movieBuddyFactory.movieFinder();
 		
-		List<Movie> result = movFinder.directedBy("Michael Bay");
+		List<Movie> result = movieFinder.directedBy("Michael Bay");
 		assertEquals(3, result.size());
 
-        result = movFinder.releasedYearBy(2015);
+        result = movieFinder.releasedYearBy(2015);
         assertEquals(225, result.size());
 	}
 	

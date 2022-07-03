@@ -37,7 +37,10 @@ public class MovieBuddyApplication {
      */
 
     public void run(String[] args) throws Exception {
-    	final MovieFinder movFinder = new MovieFinder(new CsvMovieReader());
+    	//중복되어 생성되는 객체를 Factory를 통한 역할과 책임 분리
+    	//final MovieFinder movFinder = new MovieFinder(new CsvMovieReader());
+    	final MovieBuddyFactory movieBuddyFactory = new MovieBuddyFactory();
+    	final MovieFinder movieFinder = movieBuddyFactory.movieFinder();
     	
         final AtomicBoolean running = new AtomicBoolean(true);
         final BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
@@ -58,7 +61,7 @@ public class MovieBuddyApplication {
             if (director.isBlank()) {
                 throw new ApplicationException.InvalidCommandArgumentsException();
             }
-            List<Movie> moviesDirectedBy = movFinder.directedBy(director);
+            List<Movie> moviesDirectedBy = movieFinder.directedBy(director);
             AtomicInteger counter = new AtomicInteger(1);
 
             output.println(String.format("find for movies by %s.", director));
@@ -76,7 +79,7 @@ public class MovieBuddyApplication {
             } catch (IndexOutOfBoundsException | NumberFormatException error) {
                 throw new ApplicationException.InvalidCommandArgumentsException(error);
             }
-            List<Movie> moviesReleasedYearBy = movFinder.releasedYearBy(releaseYear);
+            List<Movie> moviesReleasedYearBy = movieFinder.releasedYearBy(releaseYear);
             AtomicInteger counter = new AtomicInteger(1);
 
             output.println(String.format("find for movies from %s year.", releaseYear));
