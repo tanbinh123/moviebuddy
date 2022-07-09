@@ -13,7 +13,8 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import moviebuddy.domain.CsvMovieReader;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import moviebuddy.domain.Movie;
 import moviebuddy.domain.MovieFinder;
 
@@ -37,10 +38,16 @@ public class MovieBuddyApplication {
      */
 
     public void run(String[] args) throws Exception {
+    	final ApplicationContext applivationContext = 
+    			new AnnotationConfigApplicationContext(MovieBuddyFactory.class);
+    	final MovieFinder movieFinder = applivationContext.getBean(MovieFinder.class);
+    	
+    	/*
     	//중복되어 생성되는 객체를 Factory를 통한 역할과 책임 분리
     	//final MovieFinder movFinder = new MovieFinder(new CsvMovieReader());
     	final MovieBuddyFactory movieBuddyFactory = new MovieBuddyFactory();
     	final MovieFinder movieFinder = movieBuddyFactory.movieFinder();
+    	*/
     	
         final AtomicBoolean running = new AtomicBoolean(true);
         final BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
