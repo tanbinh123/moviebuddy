@@ -23,11 +23,13 @@ public class MovieBuddyFactory {
 	@Configuration
 	static class DomainModuleConfig {
 		//자바 코드로 의존 관계 주입하는 방법으로 2번째 메소드 파라미터로 받는 방식
+		/*
 		@Bean
 		//@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE) //@Scope("prototype") //동일한 뜻이다.
 		public MovieFinder movieFinder(MovieReader movieReader) {
 			return new MovieFinder(movieReader);
 		}
+		*/
 	}
 	
 	@Configuration

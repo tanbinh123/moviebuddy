@@ -4,8 +4,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 //영화를 불러들이고 검색하기 위한 클래스
 // MovieFinder가 MovieReader 인터페이스를 통해서 동작하도록 구현
+@Service
 public class MovieFinder {
 	//기존 MovieFinder는 단순히 new를 사용하여 객체를 생성하는 것이지만, 독립적으로 확장 가능한 클래스가 될 수 없는 상태이다.
 	//private MovieReader movieReader = new CsvMovieReader();
@@ -13,6 +17,7 @@ public class MovieFinder {
 	//내부에서 직접 생성하지 않고, 생성자를 통해 외부에서 입력받도록 변경한다.
 	private final MovieReader movieReader;
 	
+	@Autowired //의존 관계 주입을 자동으로 설정, 하나뿐인 생성자를 가진 빈을 등록할때는 @Autowired를 생략해도 된다.
 	public MovieFinder(MovieReader movieReader) {
 		this.movieReader = Objects.requireNonNull(movieReader);
 	}
