@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 //영화를 불러들이고 검색하기 위한 클래스
@@ -18,7 +19,8 @@ public class MovieFinder {
 	private final MovieReader movieReader;
 	
 	@Autowired //의존 관계 주입을 자동으로 설정, 하나뿐인 생성자를 가진 빈을 등록할때는 @Autowired를 생략해도 된다.
-	public MovieFinder(MovieReader movieReader) {
+	//public MovieFinder(MovieReader movieReader) {
+	public MovieFinder(@Qualifier("csvMovieReader")MovieReader movieReader) {
 		this.movieReader = Objects.requireNonNull(movieReader);
 	}
 

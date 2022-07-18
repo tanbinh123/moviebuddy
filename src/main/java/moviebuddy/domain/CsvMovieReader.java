@@ -1,4 +1,4 @@
-package moviebuddy.domain;
+ package moviebuddy.domain;
 
 import java.io.IOException;
 import java.net.URI;
@@ -19,6 +19,7 @@ import moviebuddy.ApplicationException;
 import moviebuddy.util.FileSystemUtils;
 
 //@Component
+//@Repository("movieReader")
 @Repository
 public class CsvMovieReader implements MovieReader{
 	/**
