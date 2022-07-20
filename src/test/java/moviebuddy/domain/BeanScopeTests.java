@@ -16,5 +16,4 @@ public class BeanScopeTests {
 		
 		Assertions.assertEquals(movieFinder, applicationContext.getBean(MovieFinder.class));
 	}
-	
 }
