@@ -20,7 +20,9 @@ public class MovieFinder {
 	
 	@Autowired //의존 관계 주입을 자동으로 설정, 하나뿐인 생성자를 가진 빈을 등록할때는 @Autowired를 생략해도 된다.
 	//public MovieFinder(MovieReader movieReader) {
-	public MovieFinder(@Qualifier("csvMovieReader")MovieReader movieReader) {
+	//public MovieFinder(@Qualifier("csvMovieReader")MovieReader movieReader) {
+	//XML을 읽어 사용하도록 버전의 배포할때 배포폰을 따로따로 만들어야 한다. 
+	public MovieFinder(@Qualifier("jaxbMovieReader")MovieReader movieReader) {
 		this.movieReader = Objects.requireNonNull(movieReader);
 	}
 
