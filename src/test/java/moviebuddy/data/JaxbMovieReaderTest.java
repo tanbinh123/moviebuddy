@@ -5,12 +5,15 @@ import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import moviebuddy.MovieBuddyFactory;
+import moviebuddy.MovieBuddyProfile;
 import moviebuddy.data.JaxbMovieReader;
 import moviebuddy.domain.Movie;
 
+@ActiveProfiles(MovieBuddyProfile.XML_MODE)
 @SpringJUnitConfig(MovieBuddyFactory.class)
 public class JaxbMovieReaderTest {
 	//동일한 타입의 빈을 적용하는 것이 아닌 구체적인 타입으로 와이어링을 하였기 때문에

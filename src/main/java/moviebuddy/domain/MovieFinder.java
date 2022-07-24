@@ -22,7 +22,11 @@ public class MovieFinder {
 	//public MovieFinder(MovieReader movieReader) {
 	//public MovieFinder(@Qualifier("csvMovieReader")MovieReader movieReader) {
 	//XML을 읽어 사용하도록 버전의 배포할때 배포폰을 따로따로 만들어야 한다. 
+	
+	/*상황 환경에 따라서 작동할 것이기 때문에 구제적인 이름의 빈을 제거한다.
 	public MovieFinder(@Qualifier("jaxbMovieReader")MovieReader movieReader) {
+	*/
+	public MovieFinder(MovieReader movieReader) {
 		this.movieReader = Objects.requireNonNull(movieReader);
 	}
 

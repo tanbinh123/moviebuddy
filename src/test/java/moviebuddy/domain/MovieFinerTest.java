@@ -8,17 +8,21 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import moviebuddy.MovieBuddyFactory;
+import moviebuddy.MovieBuddyProfile;
 
 /**
  * @author springrunner.kr@gmail.com
  * 영화감독으로 검색을 하더나 또는 개봉 연도로 검색을 해서 검색한 결과가 일치하는지 검증하는 코드
  */
 
+//테스트 환경에서 적절한 프로파일이 활성화될 수 있도록 설정
+@ActiveProfiles(MovieBuddyProfile.CSV_MODE)
 @SpringJUnitConfig(MovieBuddyFactory.class)
 /*
 //의존성 스프링 테스트 모듈 빌드시 사용하는 애노테이션이며 JUnit을 테스트 실행 전략을 확장할때 사용한다.

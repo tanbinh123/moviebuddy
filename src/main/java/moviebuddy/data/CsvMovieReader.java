@@ -12,16 +12,19 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import moviebuddy.ApplicationException;
+import moviebuddy.MovieBuddyProfile;
 import moviebuddy.domain.Movie;
 import moviebuddy.domain.MovieReader;
 import moviebuddy.util.FileSystemUtils;
 
 //@Component
 //@Repository("movieReader")
+@Profile(MovieBuddyProfile.CSV_MODE)
 @Repository
 public class CsvMovieReader implements MovieReader{
 	/**
