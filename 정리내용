@@ -219,4 +219,9 @@ SLF4J는 (Simple Logging Facade for Java의 첫글자를 따서) 파사드 패�
 
 애플리케이션에 SLF4J와 API와 Logback 의존성을 추가해야 한다.
 
+# 서비스 추상화로 스프링 OXM 모듈을 제공
+자바 객체와 XM을 매핑해서 상호 변환해 주는 기술을 Object-XML Mapping이라 부르고, OXM이라고도 한다.
+현재 지원하는 OXM기술은 JAXB, 그 외에도 JIBX, XStream이 있습니다.
+
+자바 객체를 XML로 변환해 주는 Marshaller와 반대로 XML을 자바 객체로 변환하는 Unmarshaller가 있습니다.
 
