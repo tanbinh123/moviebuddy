@@ -7,6 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Scope;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
 import moviebuddy.data.CsvMovieReader;
 import moviebuddy.domain.MovieFinder;
@@ -19,6 +20,16 @@ import moviebuddy.domain.MovieReader;
 //@ComponentScan(basePackages = { "moviebuddy" }) //패키지를 지정하고 싶을때
 @Import({ MovieBuddyFactory.DomainModuleConfig.class, MovieBuddyFactory.DataSourceModuleConfig.class })
 public class MovieBuddyFactory {
+	//새로운 빈 등록 / Jaxb2Marshaller가 마샬과 언마샬 인터페이스를 모두 구현하고 있기 때문에 언마샬도 가능해서 사용한다. 
+	@Bean
+	public Jaxb2Marshaller jaxb2Marshaller() {
+		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
+		marshaller.setPackagesToScan("moviebuddy");
+		
+		return marshaller;
+	}
+	
+	
 	//아래의 2개 클래스는 빈 구성 정보로 사용할 거기 때문에 @Configuration 을 붙인다.
 	@Configuration
 	static class DomainModuleConfig {
