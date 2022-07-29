@@ -225,3 +225,9 @@ SLF4J는 (Simple Logging Facade for Java의 첫글자를 따서) 파사드 패�
 
 자바 객체를 XML로 변환해 주는 Marshaller와 반대로 XML을 자바 객체로 변환하는 Unmarshaller가 있습니다.
 
+
+# 이식 가능한 서비스 추상화(Portable Service Abstraction)
+
+환경과 구현 기술의 변경과 무관하게 일관된 방식으로 기술을 다룰 수 있게 지원한다.
+엔터프라이즈 애플리케이션에 사용되는 다양한 기술의 서비스 추상화가 제공된다.
+제어의 역전(IOC) 원리를 통해 POJO에게 제공된다.
