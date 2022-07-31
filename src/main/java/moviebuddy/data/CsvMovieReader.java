@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -27,6 +28,22 @@ import moviebuddy.util.FileSystemUtils;
 @Profile(MovieBuddyProfile.CSV_MODE)
 @Repository
 public class CsvMovieReader implements MovieReader{
+	//외부로 부터 메타데이터를 입력 받을 수 있도록
+	//자바의 setter 메소드를 활용
+	private String metadata;
+	
+	public String getMetadata() {
+		return metadata;
+	}
+
+
+
+	public void setMetadata(String metadata) {
+		this.metadata = Objects.requireNonNull(metadata, "metadata is required value");
+	}
+
+
+
 	/**
      * 영화 메타데이터를 읽어 저장된 영화 목록을 불러온다.
      * 
@@ -35,7 +52,9 @@ public class CsvMovieReader implements MovieReader{
 	@Override
     public List<Movie> loadMovies() {
         try {
-            final URI resourceUri = ClassLoader.getSystemResource("movie_metadata.csv").toURI();
+            //final URI resourceUri = ClassLoader.getSystemResource("movie_metadata.csv").toURI();
+        	//메타 데이터 위치를 읽을 수 있도록 설정.
+        	final URI resourceUri = ClassLoader.getSystemResource(getMetadata()).toURI();
             final Path data = Path.of(FileSystemUtils.checkFileSystem(resourceUri));
             final Function<String, Movie> mapCsv = csv -> {
                 try {

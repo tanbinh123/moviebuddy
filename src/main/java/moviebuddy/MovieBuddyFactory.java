@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
@@ -60,6 +61,16 @@ public class MovieBuddyFactory {
 			return new MovieFinder(new CsvMovieReader());
 		}
 		*/	
+		
+		//환경에 따라서 빈이 등록이 되거나 되지 않을 수 있기 때문에 Profile 애노테이션을 통해서 CsvMovieReader을 등록
+		@Profile(MovieBuddyProfile.CSV_MODE)
+		@Bean
+		public CsvMovieReader csvMovieReader() {
+			CsvMovieReader movieReader = new CsvMovieReader();
+			movieReader.setMetadata("movie_metadata.csv");
+			
+			return movieReader;
+		}
 	}
 	
 }
