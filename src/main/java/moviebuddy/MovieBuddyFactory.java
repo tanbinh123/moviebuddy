@@ -1,6 +1,9 @@
 package moviebuddy;
 // 객체를 생성하고 구성하는 역할
 
+import java.io.FileNotFoundException;
+import java.net.URISyntaxException;
+
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -65,7 +68,7 @@ public class MovieBuddyFactory {
 		//환경에 따라서 빈이 등록이 되거나 되지 않을 수 있기 때문에 Profile 애노테이션을 통해서 CsvMovieReader을 등록
 		@Profile(MovieBuddyProfile.CSV_MODE)
 		@Bean
-		public CsvMovieReader csvMovieReader() {
+		public CsvMovieReader csvMovieReader() throws FileNotFoundException, URISyntaxException {
 			CsvMovieReader movieReader = new CsvMovieReader();
 			movieReader.setMetadata("movie_metadata.csv");
 			

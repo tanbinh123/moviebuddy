@@ -1,5 +1,6 @@
  package moviebuddy.data;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -38,8 +39,20 @@ public class CsvMovieReader implements MovieReader{
 
 
 
-	public void setMetadata(String metadata) {
-		this.metadata = Objects.requireNonNull(metadata, "metadata is required value");
+	public void setMetadata(String metadata) throws FileNotFoundException, URISyntaxException {
+		//형식에 맞지 않는 데이터가 오면 에러가 발생함으로, 빠르게 확인해 보는 검증 코드 추가
+		URL metadataUrl = ClassLoader.getSystemResource(metadata);
+		if(Objects.isNull(metadataUrl)) {
+			throw new FileNotFoundException(metadata);
+		}
+		
+		//읽을 수 있는 파일인지 확인
+		if (Files.isReadable(Path.of(metadataUrl.toURI())) == false ){
+			throw new ApplicationException(String.format("cannot read to metadata. [%s]", metadata));
+		}
+		
+		//this.metadata = Objects.requireNonNull(metadata, "metadata is required value");
+		this.metadata = metadata;
 	}
 
 
