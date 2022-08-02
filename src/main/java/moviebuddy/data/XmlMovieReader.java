@@ -26,7 +26,7 @@ import moviebuddy.domain.MovieReader;
 
 @Profile(MovieBuddyProfile.XML_MODE)
 @Repository
-public class XmlMovieReader implements MovieReader{
+public class XmlMovieReader extends AbstractFileSystemMovieReader implements MovieReader{
 	
 	//외부로부터 언마샬로 객체를 받아서 처리를 위해 변경을한다.
 	/*기존의 xml Unmarshaller를 사용하고 있기 때문에 pull name으로 적용되므로, 위의 import javax.xml.bind.Unmarshaller; 를 지워주고 다시 한다.  
@@ -47,7 +47,8 @@ public class XmlMovieReader implements MovieReader{
 			final Unmarshaller unmarshaller = jaxb.createUnmarshaller();
 			*/
 			
-			final InputStream content = ClassLoader.getSystemResourceAsStream("Movie_metadata.xml");
+			//final InputStream content = ClassLoader.getSystemResourceAsStream("Movie_metadata.xml");
+			final InputStream content = ClassLoader.getSystemResourceAsStream(getMetadata());//외부의 값을 받기 위해
 			final Source source = new StreamSource(content); 
 			final MovieMetadata metadata = (MovieMetadata) unmarshaller.unmarshal(source);
 			

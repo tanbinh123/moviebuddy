@@ -11,9 +11,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
+import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
+import moviebuddy.data.AbstractFileSystemMovieReader;
 import moviebuddy.data.CsvMovieReader;
+import moviebuddy.data.XmlMovieReader;
 import moviebuddy.domain.MovieFinder;
 import moviebuddy.domain.MovieReader;
 
@@ -68,9 +71,18 @@ public class MovieBuddyFactory {
 		//환경에 따라서 빈이 등록이 되거나 되지 않을 수 있기 때문에 Profile 애노테이션을 통해서 CsvMovieReader을 등록
 		@Profile(MovieBuddyProfile.CSV_MODE)
 		@Bean
-		public CsvMovieReader csvMovieReader() throws FileNotFoundException, URISyntaxException {
+		public CsvMovieReader csvMovieReader() {
 			CsvMovieReader movieReader = new CsvMovieReader();
 			movieReader.setMetadata("movie_metadata.csv");
+			
+			return movieReader;
+		}
+		
+		@Profile(MovieBuddyProfile.XML_MODE)
+		@Bean
+		public XmlMovieReader xmlMovieReader(Unmarshaller unmarshaller) {
+			XmlMovieReader movieReader = new XmlMovieReader(unmarshaller);
+			movieReader.setMetadata("movie_metadata.xml");
 			
 			return movieReader;
 		}
