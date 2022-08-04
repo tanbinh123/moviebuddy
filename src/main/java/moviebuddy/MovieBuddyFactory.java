@@ -54,29 +54,26 @@ public class MovieBuddyFactory {
 	
 	@Configuration
 	static class DataSourceModuleConfig {
+		/*MovieBuddyFactory에서 수동으로 빈을 등록할 필요가 없어서 제거
 		//스프링의 컨테이너의 도움을 받아서 의존 관계 주입을 받는다.
-		private final Environment environment;
+		//private final Environment environment;
 		
 		//@Autowired 가 생략되어 있다고 보면 된다.
-		public DataSourceModuleConfig(Environment environment) {
-			this.environment = environment;
-		}
+		//public DataSourceModuleConfig(Environment environment) {
+		//	this.environment = environment;
+		//}
 		
-		/*
-		ComponentScan을 하기 위해 제거 
-		@Bean
-		public MovieReader movieReader() {
-			return new CsvMovieReader();
-		}
-		*/
+		//ComponentScan을 하기 위해 제거 
+		//@Bean
+		//public MovieReader movieReader() {
+		//	return new CsvMovieReader();
+		//}
 		
-		/*
-		주입 방식중 1번째 메서드 콜 방식 
-		@Bean
-		public MovieFinder movieFinder() {
-			return new MovieFinder(new CsvMovieReader());
-		}
-		*/	
+		//주입 방식중 1번째 메서드 콜 방식 
+		//@Bean
+		//public MovieFinder movieFinder() {
+		//	return new MovieFinder(new CsvMovieReader());
+		//}
 		
 		//환경에 따라서 빈이 등록이 되거나 되지 않을 수 있기 때문에 Profile 애노테이션을 통해서 CsvMovieReader을 등록
 		@Profile(MovieBuddyProfile.CSV_MODE)
@@ -90,7 +87,8 @@ public class MovieBuddyFactory {
 			
 			//movieReader.setMetadata("movie_metadata.csv");
 			//movieReader.setMetadata(System.getProperty("movie.metadata"));
-			movieReader.setMetadata(environment.getProperty("movie.metadata"));
+			//스프링 컨테이너인 Value 애노테이션으로 AbstractFileSystemMovieReader 주입받고 있기 때문에 주석처리 
+			//movieReader.setMetadata(environment.getProperty("movie.metadata"));
 			return movieReader;
 		}
 		
@@ -100,10 +98,13 @@ public class MovieBuddyFactory {
 			XmlMovieReader movieReader = new XmlMovieReader(unmarshaller);
 			//movieReader.setMetadata("movie_metadata.xml");
 			//movieReader.setMetadata(System.getProperty("movie.metadata"));
-			movieReader.setMetadata(environment.getProperty("movie.metadata"));
+			//스프링 컨테이너인 Value 애노테이션으로 AbstractFileSystemMovieReader 주입받고 있기 때문에 주석처리 
+			//movieReader.setMetadata(environment.getProperty("movie.metadata"));
 			
 			return movieReader;
 		}
+		*/
 	}
+	
 	
 }

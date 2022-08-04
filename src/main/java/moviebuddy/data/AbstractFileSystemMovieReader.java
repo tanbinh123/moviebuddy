@@ -11,6 +11,7 @@ import javax.annotation.PreDestroy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 import moviebuddy.ApplicationException;
 import moviebuddy.domain.MovieReader;
@@ -23,7 +24,9 @@ public abstract class AbstractFileSystemMovieReader {
 	public String getMetadata() {
 		return metadata;
 	}
-
+	
+	
+	@Value("${movie.metadata}") //애노테이션을 이용해 빈 프로퍼티 값 설정을 지원합니다.
 	public void setMetadata(String metadata) {
 		//this.metadata = Objects.requireNonNull(metadata, "metadata is required value");
 		this.metadata = metadata;
