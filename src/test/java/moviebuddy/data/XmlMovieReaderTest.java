@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import moviebuddy.MovieBuddyFactory;
@@ -15,6 +16,7 @@ import moviebuddy.domain.Movie;
 
 @ActiveProfiles(MovieBuddyProfile.XML_MODE)
 @SpringJUnitConfig(MovieBuddyFactory.class)
+@TestPropertySource(properties = "movie.metadata=movie_metadata.xml") //테스트를 위한 프로퍼티 적용
 public class XmlMovieReaderTest {
 	//동일한 타입의 빈을 적용하는 것이 아닌 구체적인 타입으로 와이어링을 하였기 때문에
 	//빈이 3개가 있지만 오류가 안나는 것이다.
@@ -31,4 +33,4 @@ public class XmlMovieReaderTest {
 		
 	}
 	
-}
+} 

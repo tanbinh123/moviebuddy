@@ -11,6 +11,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
 import org.springframework.oxm.Unmarshaller;
@@ -25,6 +26,7 @@ import moviebuddy.domain.MovieReader;
 //@Import은 다른 클래스에서 빈 구성 정보를 불러오기 위해서 사용하는 것이다.
 //XML을 불러오고 싶으면, @ImportResource("xml file location") 지정된 곳의 XML파일을 읽어서 불러올 수 있다.
 @Configuration
+@PropertySource("/application.properties") //application.properties를 클래스로 부터 찾아라
 @ComponentScan
 //@ComponentScan(basePackages = { "moviebuddy" }) //패키지를 지정하고 싶을때
 @Import({ MovieBuddyFactory.DomainModuleConfig.class, MovieBuddyFactory.DataSourceModuleConfig.class })
