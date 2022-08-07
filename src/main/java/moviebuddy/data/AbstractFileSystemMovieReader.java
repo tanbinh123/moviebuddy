@@ -31,11 +31,28 @@ public abstract class AbstractFileSystemMovieReader {
 		//this.metadata = Objects.requireNonNull(metadata, "metadata is required value");
 		this.metadata = metadata;
 	}
+	
+	//자바의 URL 클래스로는 서블릿 컨텍스트 경로나 클라우드 스토리지 서비스에 있느 자원과 같은 것들은 표현할 수 없다.
+	public URL getMetadataUrl() {
+		String location = getMetadata();
+		if (location.startsWith("file:")) {
+			// file URL 처리
+			
+		} else if (location.startsWith("http:")) {
+			// http URL 처리
+			
+		}
+		
+		return  ClassLoader.getSystemResource(location);
+	}
 
 	@PostConstruct
 	public void afterPropertiesSet() throws Exception {
+		//ClassLoader.getSystemResource() 클래스 패스 상에 있는 자원만 읽어 들일 수 있다.
+		
 		//형식에 맞지 않는 데이터가 오면 에러가 발생함으로, 빠르게 확인해 보는 검증 코드 추가
-		URL metadataUrl = ClassLoader.getSystemResource(metadata);
+		//URL metadataUrl = ClassLoader.getSystemResource(metadata);
+		URL metadataUrl = getMetadataUrl();
 		if(Objects.isNull(metadataUrl)) {
 			throw new FileNotFoundException(metadata);
 		}
