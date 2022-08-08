@@ -17,7 +17,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
-import moviebuddy.data.AbstractFileSystemMovieReader;
+import moviebuddy.data.AbstractMetadataResourceMovieReader;
 import moviebuddy.data.CsvMovieReader;
 import moviebuddy.data.XmlMovieReader;
 import moviebuddy.domain.MovieFinder;

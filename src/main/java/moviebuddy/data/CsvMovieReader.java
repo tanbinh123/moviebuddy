@@ -1,6 +1,9 @@
  package moviebuddy.data;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -28,7 +31,7 @@ import moviebuddy.util.FileSystemUtils;
 //@Repository("movieReader")
 @Profile(MovieBuddyProfile.CSV_MODE)
 @Repository
-public class CsvMovieReader extends AbstractFileSystemMovieReader implements MovieReader {
+public class CsvMovieReader extends AbstractMetadataResourceMovieReader implements MovieReader {
 	/**
      * 영화 메타데이터를 읽어 저장된 영화 목록을 불러온다.
      * 
@@ -39,8 +42,10 @@ public class CsvMovieReader extends AbstractFileSystemMovieReader implements Mov
         try {
             //final URI resourceUri = ClassLoader.getSystemResource("movie_metadata.csv").toURI();
         	//메타 데이터 위치를 읽을 수 있도록 설정.
-        	final URI resourceUri = ClassLoader.getSystemResource(getMetadata()).toURI();
-            final Path data = Path.of(FileSystemUtils.checkFileSystem(resourceUri));
+        	//스프링의 리소스 인터페이스를 사용하도록 변경
+        	//final URI resourceUri = ClassLoader.getSystemResource(getMetadata()).toURI();
+        	final InputStream content = getmetadataResource().getInputStream();
+            //final Path data = Path.of(FileSystemUtils.checkFileSystem(resourceUri));
             final Function<String, Movie> mapCsv = csv -> {
                 try {
                     // split with comma
@@ -61,13 +66,16 @@ public class CsvMovieReader extends AbstractFileSystemMovieReader implements Mov
                     throw new ApplicationException("mapping csv to object failed.", error);
                 }
             };
-
-            return Files.readAllLines(data, StandardCharsets.UTF_8)
-                        .stream()
+            
+            return new BufferedReader(new InputStreamReader(content, StandardCharsets.UTF_8))
+                    .lines()
+            //return Files.readAllLines(data, StandardCharsets.UTF_8)
+                        //.stream()
                         .skip(1)
                         .map(mapCsv)
                         .collect(Collectors.toList());
-        } catch (IOException | URISyntaxException error) {
+        //} catch (IOException | URISyntaxException error) {
+        } catch (IOException error) {
             throw new ApplicationException("failed to load movies data.", error);
         }
     }

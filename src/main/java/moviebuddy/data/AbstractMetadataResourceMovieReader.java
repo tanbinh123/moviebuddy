@@ -12,14 +12,18 @@ import javax.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ResourceLoaderAware;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 
 import moviebuddy.ApplicationException;
 import moviebuddy.domain.MovieReader;
 
-public abstract class AbstractFileSystemMovieReader {
+public abstract class AbstractMetadataResourceMovieReader implements ResourceLoaderAware {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	private String metadata;
+	private ResourceLoader resourceLoader;
 
 	public String getMetadata() {
 		return metadata;
@@ -46,12 +50,37 @@ public abstract class AbstractFileSystemMovieReader {
 		return  ClassLoader.getSystemResource(location);
 	}
 
+	
+	
+	@Override
+	public void setResourceLoader(ResourceLoader resourceLoader) {
+		this.resourceLoader = resourceLoader;
+	}
+	
+	public Resource getmetadataResource() {
+		return resourceLoader.getResource(getMetadata());
+	}
+
+
 	@PostConstruct
 	public void afterPropertiesSet() throws Exception {
 		//ClassLoader.getSystemResource() 클래스 패스 상에 있는 자원만 읽어 들일 수 있다.
+
+		Resource resource = getmetadataResource();
+		//!resource.exists() 아래의 false 비교와 동일하다.
+		if (resource.exists() == false) {
+			throw new FileNotFoundException(metadata);
+		}
+		if (resource.exists() == false) {
+			throw new ApplicationException(String.format("cannot read to metadata. [%s]", metadata));
+		}
+		
+		log.info(resource + "is ready.");
 		
 		//형식에 맞지 않는 데이터가 오면 에러가 발생함으로, 빠르게 확인해 보는 검증 코드 추가
 		//URL metadataUrl = ClassLoader.getSystemResource(metadata);
+		/*
+		*자바의 URL API와 NIO를 쓰던 API 코드는 다 제거하고, 위의 스프링의 인터페이스를 기반으로 동작하는 코드로 변경
 		URL metadataUrl = getMetadataUrl();
 		if(Objects.isNull(metadataUrl)) {
 			throw new FileNotFoundException(metadata);
@@ -61,6 +90,7 @@ public abstract class AbstractFileSystemMovieReader {
 		if (Files.isReadable(Path.of(metadataUrl.toURI())) == false ){
 			throw new ApplicationException(String.format("cannot read to metadata. [%s]", metadata));
 		}
+		*/
 		
 	}
 
