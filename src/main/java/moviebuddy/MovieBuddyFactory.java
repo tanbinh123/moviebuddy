@@ -8,6 +8,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -44,6 +46,15 @@ public class MovieBuddyFactory {
 		marshaller.setPackagesToScan("moviebuddy");
 		
 		return marshaller;
+	}
+	
+	//CaffeineCacheManager 직접 넣는 방식이 아니라 빈으로 등록하기
+	@Bean
+	public CacheManager CaffeineCacheManager() {
+		CaffeineCacheManager casCacheManager = new CaffeineCacheManager();
+		casCacheManager.setCaffeine(Caffeine.newBuilder().expireAfterWrite(3, TimeUnit.SECONDS));
+		
+		return casCacheManager;
 	}
 	
 	
@@ -113,14 +124,19 @@ public class MovieBuddyFactory {
 		}
 		*/
 		
+		/*
 		@Bean
 		public CsvMovieReader csvMovieReader() {
+			CacheManager cacheManager = new CaffeineCacheManager();
+			
 			//일정시간 유지하고 빠져나가도록, 3초 유지
 			Cache<String, List<Movie>> cache = Caffeine.newBuilder()
 					.expireAfterWrite(3, TimeUnit.SECONDS)
 					.build();
 			
-			return new CsvMovieReader(cache);
+			//return new CsvMovieReader(cache);
+			return new CsvMovieReader(cacheManager);
 		}
+		*/
 	}
 }
