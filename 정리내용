@@ -285,4 +285,14 @@ ex) @Profile("development") development 프로파일이 활성화되면 메모�
  //표준자바 java.net.URL 접두사(file, http)를 통해 자원 불러오기
  Resource resource = applicationContext.getResource("file:./files/template.tml");
  Resource resource = applicationContext.getResource("https://myhost.com/resource/template.tml");
+ 
+ # 캐시(Cache)
+ 캐시는 임시 저장소를 뜻하며, 애플리케이션 성능을 향상시키는 기법중 하나이다.
+ 객체 캐싱(object caching)은 기존에 사용된 객체에 캐시에 저장해두었다가 다시 참조될 때 사용하는 방법이다.
+ 
+ caffeine 자바의 표준 캐싱 API인 JCache, 즉 JSR-107과 함께 스프링을 포함해 다양한 자바 생태계의 프레임워크를 지원한다.
+ 
+ ! 캐시를 사용할때 주의점은 애플리케이션이 동작하는 데 영향을 주지 않을 정도로 적절한 크기로 메모리를 잡아야 한다.
+ 최대 개수, 만료 시간으로 관리하는 것을 '캐시 관리'하고 한다.
+ 
   
