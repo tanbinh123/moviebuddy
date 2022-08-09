@@ -3,6 +3,8 @@ package moviebuddy;
 
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -17,9 +19,13 @@ import org.springframework.core.env.Environment;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+
 import moviebuddy.data.AbstractMetadataResourceMovieReader;
 import moviebuddy.data.CsvMovieReader;
 import moviebuddy.data.XmlMovieReader;
+import moviebuddy.domain.Movie;
 import moviebuddy.domain.MovieFinder;
 import moviebuddy.domain.MovieReader;
 
@@ -106,7 +112,15 @@ public class MovieBuddyFactory {
 			return movieReader;
 		}
 		*/
+		
+		@Bean
+		public CsvMovieReader csvMovieReader() {
+			//일정시간 유지하고 빠져나가도록, 3초 유지
+			Cache<String, List<Movie>> cache = Caffeine.newBuilder()
+					.expireAfterWrite(3, TimeUnit.SECONDS)
+					.build();
+			
+			return new CsvMovieReader(cache);
+		}
 	}
-	
-	
 }
