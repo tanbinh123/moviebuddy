@@ -336,3 +336,61 @@ Byte Buddy
 # BeanPostProcessor 인터페이스를 구현해서 만드는 빈 후처리기
 
 # Advisor = PointCut(대상 선정 알고리즘)과 Advice(부가기능)
+
+# AOP
+관점지향 프로그래밍은 모듈화된 부가 기능과 적용 대상의 조합을 통해 여러 객체에 산재해서 나타나는 횡단 관심사를 손쉽게 개발하고 관리할 수 있는 기술입니다.
+스프링은 Ioc/DI를 이용해 프락시(proxy) 기반 관점지향 프로그래밍을 지원한다.
+
+# 스피링 AOP API란?
+스프링이 관점지향 프로그래밍을 지원하기 위해 구축한 저수준 API로 순수 자바 언어로 작성되었다.
+어드바이스, 포인트컷, 어드바이저 그리고 프락시-팩토리빈 등으로 구성된다.
+
+# 어드바이스 API
+어드바이스는 대상 객체에 적용하는 순수한 부가기능을 담은 객체이다.
+org.aopalliance.aop.Advice 인터페이스를 기반으로 용도에 따라 여러가지 확장 인터페이스를 제공한다.
+
+어드바이스의 종류
+MethodInterceptor
+MethodBeforeAdvice
+AfterReturningAdvice
+ThrowsAdvice
+
+# 포인트컷 API
+포인트것은 부가기능을 적용할 메소드(조인 포인트) 선정 알고리즘을 담은 객체이다.
+클래스 필터(classFilter)와 메소드 매처(MethodMatcher) 두 가지 기능을 통해 포인트컷을 선정한다.
+org.springframework.aop.Pointcut 인터페이스를 바탕으로 다양한 구현체가 제공된다.
+
+포인트컷:
+AnnotationMatchingPointcut
+NameMatchMethodPointcut
+AspectJExpressionPointcut
+
+# 어드바이저 API
+어드바이저는 어드바이스(부가기능)와 포인트컷(메소드 성전 알고리즘)을 묶은 객체이다.
+org.springframework.aop.Advisor 인터페이스를 바탕으로 다양한 구현체가 제공된다.
+
+어드바이저:
+DefaultPointcutAdvisor
+NameMarchMethodPointcutAdvisor
+PersistenceExceptionTranslationAdvisor
+AsyncAnnotationAdvisor
+
+# ProxyFactoryBean으로 프락시 생성하기
+스프링 AOP 프락시 생성하는 기본적인 방법으로 포인트컷과 적용되는 어드바이스 순서 등을 제어할 수 있다.
+프락시 기술을 추상화해 일관된 방법으로 프락시를 만들 수 있게 도와주는 서비스 추상화이다.
+JDK 다이내믹 프락시와 CGLIB 프락시를 지원한다.
+
+# 스프링 AOP 프락시의 종류
+JDK 다이내믹 프락시는 인터페이스 기반으로 프락시를 만든다. 스프링의 기본 프락시 생성 전략이다.
+CGLIB는 바이트코드 생성 기술을 이용 상속 기반으로 프락시를 만든다.
+
+**스프링은 인터페이스를 통한 객체 지향적인 합성 기법과 이를 바탕에 둔 제어의 역전과 의존 관계 주입을 사용하도록 권장한다.  
+
+# 빈 후처리기를 이용한 자동 프락시 생성기
+패턴을 이용해 자동으로 AOP 프락시 적용 대상을 선정하고, 프락시를 구성할 수 있다.
+빈 후처리기(BeanPostProcessor)를 통해 스프링 컨테이너가 구성될 때 빈을 프락시로 대체한다.
+
+자동 프락시 생성기:
+DefaultAdvisorAutoProxyCreator
+BeanNameAutoProxyCreator
+
