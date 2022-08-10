@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.Scope;
@@ -25,6 +26,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
 import moviebuddy.data.AbstractMetadataResourceMovieReader;
+import moviebuddy.data.CachingMovieReader;
 import moviebuddy.data.CsvMovieReader;
 import moviebuddy.data.XmlMovieReader;
 import moviebuddy.domain.Movie;
@@ -138,5 +140,14 @@ public class MovieBuddyFactory {
 			return new CsvMovieReader(cacheManager);
 		}
 		*/
+		
+		//현재 프로파일에 의해서 CSV 모드 또는 XML 모드가 지정이 되면 그것에 걸맍게 생성이 된다.
+		//@Primary : 두개 이상의 동일한 타입의 빈이 존재할때 이 빈을 선호 하겠다라는 뜻
+		@Primary
+		@Bean
+		public MovieReader cachingMovieReader(CacheManager cacheManager, MovieReader target) {
+			//생성된 MovieReader 객체는 의존 관계 주입을 받아서 대상(target) 객체로써 사용 될 것이다.
+			return new CachingMovieReader(cacheManager, target);
+		}
 	}
 }
