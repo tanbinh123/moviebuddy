@@ -6,10 +6,13 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.aop.framework.ProxyFactory;
+import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +28,7 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
+import moviebuddy.cache.CachingAdvice;
 import moviebuddy.data.AbstractMetadataResourceMovieReader;
 import moviebuddy.data.CachingMovieReader;
 import moviebuddy.data.CsvMovieReader;
@@ -145,9 +149,20 @@ public class MovieBuddyFactory {
 		//@Primary : 두개 이상의 동일한 타입의 빈이 존재할때 이 빈을 선호 하겠다라는 뜻
 		@Primary
 		@Bean
-		public MovieReader cachingMovieReader(CacheManager cacheManager, MovieReader target) {
+		//public MovieReader cachingMovieReader(CacheManager cacheManager, MovieReader target) {
+		public ProxyFactoryBean cachingMovieReaderFactory(ApplicationContext applicationContext) {
+			MovieReader target = applicationContext.getBean(MovieReader.class);
+			CacheManager cacheManager = applicationContext.getBean(CacheManager.class);
+			
 			//생성된 MovieReader 객체는 의존 관계 주입을 받아서 대상(target) 객체로써 사용 될 것이다.
-			return new CachingMovieReader(cacheManager, target);
+			//return new CachingMovieReader(cacheManager, target);
+			ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
+			proxyFactoryBean.setTarget(target);
+			//클래스 프락시 활성화(true)/비활성화(false, 기본값)
+			//proxyFactoryBean.setProxyTargetClass(true);
+			proxyFactoryBean.addAdvice(new CachingAdvice(cacheManager));
+			
+			return proxyFactoryBean;
 		}
 	}
 }

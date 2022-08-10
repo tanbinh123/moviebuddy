@@ -327,3 +327,8 @@ ex) @Profile("development") development 프로파일이 활성화되면 메모�
 
 # 자바 기본 플랫폼에 내장된 리플렉션 API
 동적으로 프락시를 생성할 수 있는 기능을 제공한다.
+
+# 자바는 프락시를 다룰수 있는 다양한 기술이 존재한다.
+CGLIB
+Javassist
+Byte Buddy
