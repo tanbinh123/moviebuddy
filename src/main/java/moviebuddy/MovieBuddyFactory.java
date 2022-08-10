@@ -6,8 +6,12 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.aopalliance.aop.Advice;
+import org.springframework.aop.Advisor;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.framework.ProxyFactoryBean;
+import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.cache.CacheManager;
@@ -61,6 +65,20 @@ public class MovieBuddyFactory {
 		casCacheManager.setCaffeine(Caffeine.newBuilder().expireAfterWrite(3, TimeUnit.SECONDS));
 		
 		return casCacheManager;
+	}
+	
+	//자동 프락시 생성기 
+	@Bean
+	public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
+		return new DefaultAdvisorAutoProxyCreator();
+	}
+	
+	@Bean
+	public Advisor cachingAdvisor(CacheManager cacheManager) {
+		Advice advice = new CachingAdvice(cacheManager);
+		
+		//Advisor = PointCut(대상 선정 알고리즘)과 Advice(부가기능)
+		return new DefaultPointcutAdvisor(advice);
 	}
 	
 	
@@ -145,6 +163,7 @@ public class MovieBuddyFactory {
 		}
 		*/
 		
+		/*이렇게 직접 등록하지 않아도 이제 캐시라는 부가 기능을 어드바이저에 담아서 DefaultAdvisorAutoProxyCreator 프락시를 자동으로 구성해서 스프링 컨테이너에 등록해 줄 것이기 때문에
 		//현재 프로파일에 의해서 CSV 모드 또는 XML 모드가 지정이 되면 그것에 걸맍게 생성이 된다.
 		//@Primary : 두개 이상의 동일한 타입의 빈이 존재할때 이 빈을 선호 하겠다라는 뜻
 		@Primary
@@ -164,5 +183,6 @@ public class MovieBuddyFactory {
 			
 			return proxyFactoryBean;
 		}
+		*/
 	}
 }
