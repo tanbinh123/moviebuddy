@@ -24,6 +24,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
@@ -37,6 +38,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
 import moviebuddy.cache.CachingAdvice;
+import moviebuddy.cache.CachingAspect;
 import moviebuddy.data.AbstractMetadataResourceMovieReader;
 import moviebuddy.data.CachingMovieReader;
 import moviebuddy.data.CsvMovieReader;
@@ -52,6 +54,7 @@ import moviebuddy.domain.MovieReader;
 @ComponentScan
 //@ComponentScan(basePackages = { "moviebuddy" }) //패키지를 지정하고 싶을때
 @Import({ MovieBuddyFactory.DomainModuleConfig.class, MovieBuddyFactory.DataSourceModuleConfig.class })
+@EnableAspectJAutoProxy //AspectJ 관련된 기능 활성화
 public class MovieBuddyFactory {
 	//새로운 빈 등록 / Jaxb2Marshaller가 마샬과 언마샬 인터페이스를 모두 구현하고 있기 때문에 언마샬도 가능해서 사용한다. 
 	@Bean
@@ -71,6 +74,7 @@ public class MovieBuddyFactory {
 		return casCacheManager;
 	}
 	
+	/*AspectJ 기반으로 AOP를 사용할 거기 때문에 직접 스프링 AOP API를 이용해서 작성한 코드는 제거한다.
 	//자동 프락시 생성기 
 	@Bean
 	public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
@@ -87,7 +91,13 @@ public class MovieBuddyFactory {
 		//Advisor = PointCut(대상 선정 알고리즘)과 Advice(부가기능)
 		return new DefaultPointcutAdvisor(advice);
 	}
+	*/
 	
+	//AspectJ를 빈으로 등록
+	@Bean
+	public CachingAspect cachingAspect(CacheManager cacheManager) {
+		return new CachingAspect(cacheManager);
+	}
 	
 	//아래의 2개 클래스는 빈 구성 정보로 사용할 거기 때문에 @Configuration 을 붙인다.
 	@Configuration

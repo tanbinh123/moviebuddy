@@ -394,3 +394,7 @@ CGLIB는 바이트코드 생성 기술을 이용 상속 기반으로 프락시�
 DefaultAdvisorAutoProxyCreator
 BeanNameAutoProxyCreator
 
+# AspectJ
+*스프링은 자바 애노테이션 기반의 AspectJ 문법과 Aspect 정의 방법을 차용해, Aspect를 만들 수 있게 해줍니다.
+Aspect는 AspectJ에서 사용되는 개념으로 스프링 AOP의 어드바이저와 유사한 역할을 수행합니다.
+
