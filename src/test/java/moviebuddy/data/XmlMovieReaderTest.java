@@ -1,4 +1,4 @@
- package moviebuddy.data;
+  package moviebuddy.data;
 
 import java.util.List;
 

@@ -6,12 +6,16 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.cache.annotation.CacheResult;
+
 import org.aopalliance.aop.Advice;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
+import org.springframework.aop.support.NameMatchMethodPointcut;
+import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.cache.CacheManager;
@@ -75,6 +79,9 @@ public class MovieBuddyFactory {
 	
 	@Bean
 	public Advisor cachingAdvisor(CacheManager cacheManager) {
+		//NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
+		//pointcut.setMappedName("load*");
+		AnnotationMatchingPointcut pointcut = new AnnotationMatchingPointcut(null, CacheResult.class);
 		Advice advice = new CachingAdvice(cacheManager);
 		
 		//Advisor = PointCut(대상 선정 알고리즘)과 Advice(부가기능)

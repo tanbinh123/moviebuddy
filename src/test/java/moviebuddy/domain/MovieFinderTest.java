@@ -30,7 +30,7 @@ import moviebuddy.MovieBuddyProfile;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = MovieBuddyFactory.class) //해당 애노테이션에 지정한 빈 구성 정보를 바탕으로 스프링 컨테이너를 만듭니다.ㅍ
 */
-public class MovieFinerTest {
+public class MovieFinderTest {
 	
 	/*
 	//Junit을 사용한 Test 클래스 개선
