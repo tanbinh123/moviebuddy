@@ -436,5 +436,8 @@ execution, within, @target, @annotation 등과 같은 포인트컷 지정자로 
 // @EnableScheduling (주기적으로 어떤 기능을 수행해야 하는 경우) -> SchedulingConfigurer (구체적인 설정을 위해)
 
 
+# 국제화는 약어로 I18N / 지역화는 약어로 L10N
+ Lcale은 자바 표준 플랫폼에서 제공하는 클래스로 지역의 언어, 나라 등의 정보를 담고 있는 객체이다.
  
- 
+ # ResourceBundleMessageSource 클래스는 국제화와 지역화를 지원한다. 
+ 언어별 프로퍼티 파일만 작성해주면 로케일 설정에 따라서 동작한다. 
