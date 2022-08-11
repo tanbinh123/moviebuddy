@@ -1,4 +1,4 @@
-package moviebuddy.domain;
+ package moviebuddy.domain;
 
 import java.util.List;
 

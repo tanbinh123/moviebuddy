@@ -19,7 +19,15 @@ import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CachingConfigurer;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
+import org.springframework.cache.interceptor.CacheErrorHandler;
+import org.springframework.cache.interceptor.CacheResolver;
+import org.springframework.cache.interceptor.KeyGenerator;
+import org.springframework.cache.interceptor.SimpleCacheErrorHandler;
+import org.springframework.cache.interceptor.SimpleCacheResolver;
+import org.springframework.cache.interceptor.SimpleKeyGenerator;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -33,6 +41,10 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+import org.springframework.scheduling.annotation.AsyncConfigurationSelector;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.SchedulingConfigurer;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -54,8 +66,9 @@ import moviebuddy.domain.MovieReader;
 @ComponentScan
 //@ComponentScan(basePackages = { "moviebuddy" }) //패키지를 지정하고 싶을때
 @Import({ MovieBuddyFactory.DomainModuleConfig.class, MovieBuddyFactory.DataSourceModuleConfig.class })
-@EnableAspectJAutoProxy //AspectJ 관련된 기능 활성화
-public class MovieBuddyFactory {
+//@EnableAspectJAutoProxy //AspectJ 관련된 기능 활성화
+@EnableCaching // 간단히 캐싱을 활성화 시키고 사용하기 
+public class MovieBuddyFactory implements CachingConfigurer{
 	//새로운 빈 등록 / Jaxb2Marshaller가 마샬과 언마샬 인터페이스를 모두 구현하고 있기 때문에 언마샬도 가능해서 사용한다. 
 	@Bean
 	public Jaxb2Marshaller jaxb2Marshaller() {
@@ -93,24 +106,49 @@ public class MovieBuddyFactory {
 	}
 	*/
 	
+	/*@EnableCaching // 간단히 캐싱을 활성화 시키고 사용하기 위해서 제거
 	//AspectJ를 빈으로 등록
 	@Bean
 	public CachingAspect cachingAspect(CacheManager cacheManager) {
 		return new CachingAspect(cacheManager);
 	}
+	*/
+
+	@Override
+	public CacheManager cacheManager() {
+		return CaffeineCacheManager();
+	}
+
+	@Override
+	public CacheResolver cacheResolver() {
+		return new SimpleCacheResolver(CaffeineCacheManager());
+	}
+
+	@Override
+	public KeyGenerator keyGenerator() {
+		return new SimpleKeyGenerator();
+	}
+
+	@Override
+	public CacheErrorHandler errorHandler() {
+		// @EnableAsync (비동기 처리) ->  AsyncConfigurer (구체적인 설정을 위해)
+		// @EnableScheduling (주기적으로 어떤 기능을 수행해야 하는 경우) -> SchedulingConfigurer (구체적인 설정을 위해)
+		
+		return new SimpleCacheErrorHandler();
+	}
 	
 	//아래의 2개 클래스는 빈 구성 정보로 사용할 거기 때문에 @Configuration 을 붙인다.
-	@Configuration
-	static class DomainModuleConfig {
-		//자바 코드로 의존 관계 주입하는 방법으로 2번째 메소드 파라미터로 받는 방식
-		/*
-		@Bean
-		//@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE) //@Scope("prototype") //동일한 뜻이다.
-		public MovieFinder movieFinder(MovieReader movieReader) {
-			return new MovieFinder(movieReader);
+		@Configuration
+		static class DomainModuleConfig {
+			//자바 코드로 의존 관계 주입하는 방법으로 2번째 메소드 파라미터로 받는 방식
+			/*
+			@Bean
+			//@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE) //@Scope("prototype") //동일한 뜻이다.
+			public MovieFinder movieFinder(MovieReader movieReader) {
+				return new MovieFinder(movieReader);
+			}
+			*/
 		}
-		*/
-	}
 	
 	@Configuration
 	static class DataSourceModuleConfig {
