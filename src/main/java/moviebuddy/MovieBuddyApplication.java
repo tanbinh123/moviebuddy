@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -13,8 +14,16 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.checkerframework.checker.propkey.qual.PropertyKeyBottom;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.core.env.Environment;
+
 import moviebuddy.domain.Movie;
 import moviebuddy.domain.MovieFinder;
 
@@ -22,7 +31,18 @@ import moviebuddy.domain.MovieFinder;
  * @author springrunner.kr@gmail.com
  * 프로그램이 동작히기 위한 핵심코드와 부가적인 내용이 함께 추가된 파일 
  */
+@Configuration //빈 구성 정보로써 활용 할 수 있다.
+@PropertySource("/messages.properties")//classpath: 라는 프리릭스가 생략 되어 있지만 사용 가능하다.
 public class MovieBuddyApplication {
+	
+	@Bean
+	public MessageSource messageSource() {
+		ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+		messageSource.setBasename("messages");
+		messageSource.setDefaultEncoding("utf-8");
+		
+		return messageSource;
+	}
 
     public static void main(String[] args) throws Exception {
         new MovieBuddyApplication().run(args);
@@ -38,9 +58,11 @@ public class MovieBuddyApplication {
      */
 
     public void run(String[] args) throws Exception {
-    	final ApplicationContext applivationContext = 
-    			new AnnotationConfigApplicationContext(MovieBuddyFactory.class);
-    	final MovieFinder movieFinder = applivationContext.getBean(MovieFinder.class);
+    	final ApplicationContext applicationContext = 
+    			new AnnotationConfigApplicationContext(MovieBuddyFactory.class, MovieBuddyApplication.class);
+    	final Environment environment = applicationContext.getEnvironment();
+    	final MessageSource messageSource = applicationContext.getBean(MessageSource.class);
+    	final MovieFinder movieFinder = applicationContext.getBean(MovieFinder.class);
     	
     	/*
     	//중복되어 생성되는 객체를 Factory를 통한 역할과 책임 분리
@@ -59,7 +81,8 @@ public class MovieBuddyApplication {
         final Map<Command, Consumer<List<String>>> commandActions = new HashMap<>();
         // 애플리케이션 종료:: ❯ quit
         commandActions.put(Command.Quit, arguments -> {
-            output.println("quit application.");
+            //output.println("quit application.");
+        	output.println(messageSource.getMessage("application.commands.quit", new Object[0], Locale.getDefault()));
             running.set(false);
         });
         // 감독으로 영화 검색:: ❯ directedBy Michael Bay
@@ -71,12 +94,18 @@ public class MovieBuddyApplication {
             List<Movie> moviesDirectedBy = movieFinder.directedBy(director);
             AtomicInteger counter = new AtomicInteger(1);
 
-            output.println(String.format("find for movies by %s.", director));
+            //output.println(String.format("find for movies by %s.", director));
+            //output.println(String.format(messageSource.getMessage("application.commands.directedBy", new Object[0], Locale.getDefault()), director));//String.format을 사용함으로 치환이 되며 출력될 것이다.
+            output.println(messageSource.getMessage("application.commands.directedBy", new Object[] {director}, Locale.getDefault()));//빈 배열이 아닌 구체적인 값을 넘긴다.
             moviesDirectedBy.forEach(it -> {
-                String data = String.format("%d. title: %-50s\treleaseYear: %d\tdirector: %-25s\twatchedDate: %s", counter.getAndIncrement(), it.getTitle(), it.getReleaseYear(), it.getDirector(), it.getWatchedDate().format(Movie.DEFAULT_WATCHED_DATE_FORMATTER));
+                //String data = String.format("%d. title: %-50s\treleaseYear: %d\tdirector: %-25s\twatchedDate: %s", counter.getAndIncrement(), it.getTitle(), it.getReleaseYear(), it.getDirector(), it.getWatchedDate().format(Movie.DEFAULT_WATCHED_DATE_FORMATTER));
+                String data = String.format(messageSource.getMessage("application.commands.directedBy.format", new Object[0], Locale.getDefault()), counter.getAndIncrement(), it.getTitle(), it.getReleaseYear(), it.getDirector(), it.getWatchedDate().format(Movie.DEFAULT_WATCHED_DATE_FORMATTER));
                 output.println(data);
             });
-            output.println(String.format("%d movies found.", moviesDirectedBy.size()));
+            //output.println(String.format("%d movies found.", moviesDirectedBy.size()));
+            //output.println(String.format(messageSource.getMessage("application.commands.directedBy.count", new Object[] {moviesDirectedBy.size()}, Locale.getDefault()), moviesDirectedBy.size()));
+            //자바 format을 따를 필요가 없다. messageSource 인터페이스가 직접 치환을 하고 있기 때문에
+            output.println(messageSource.getMessage("application.commands.directedBy.count", new Object[] {moviesDirectedBy.size()}, Locale.getDefault()));
         });
         // 개봉년도로 영화 검색:: ❯ releasedYearBy 2015
         commandActions.put(Command.releasedYearBy, arguments -> {
@@ -101,7 +130,10 @@ public class MovieBuddyApplication {
         /* 사용자가 입력한 값을 해석 후 연결된 명령을 실행한다. */
 
         output.println();
-        output.println("application is ready.");
+        //output.println("application is ready.");
+        //output.println(environment.getProperty("application.ready"));
+        //자바의 MessageSource를 이용하여 출력
+        output.println(messageSource.getMessage("application.ready", new Object[0], Locale.getDefault()));
 
         // quit(애플리케이션 종료) 명령어가 입력되기 전까지 무한히 반복하기(infinite loop)
         while (running.get()) {
